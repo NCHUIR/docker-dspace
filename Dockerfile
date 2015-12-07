@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y -q --force-yes python-software-properti
 ADD . /deploy
 
 # === RUN pre-conf.sh ===
-RUN bash /deploy/pre-conf.sh
+RUN bash /deploy/setup.sh
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
