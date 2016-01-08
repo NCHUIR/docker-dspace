@@ -19,6 +19,12 @@ RUN apt-get update && apt-get install -y -q --force-yes python-software-properti
 # === ADD deploy code ===
 ADD . /deploy
 
+# === default env ===
+ENV dspace.source.dir /dspace-src
+
+# === data volume ===
+VOLUME /data
+
 # === RUN pre-conf.sh ===
 RUN bash /deploy/setup.sh
 
