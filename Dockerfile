@@ -22,11 +22,11 @@ ADD . /deploy
 # === default env ===
 ENV dspace.source.dir /dspace-src
 
-# === data volume ===
-VOLUME /data
-
 # === RUN pre-conf.sh ===
 RUN bash /deploy/setup.sh
+
+# === Default Service port ===
+EXPOSE 8080
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]

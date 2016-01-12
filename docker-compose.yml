@@ -1,16 +1,31 @@
-dspace_core:
+core:
   build: .
-  ports:
-   - "8080:8080"
   env_file:
    - ./conf/database.conf
    - ./conf/dspace.conf
-backup:
-  extends: dspace_core
-  volumes: 
-   - ./data:/data_target
-  command: 'bash "cp -r /data/* /data_target/"'
-dspace:
-  extends: dspace_core
+production:
+  extends: core
+  volumes_from: 
+   - data
+  ports:
+   - 8080:8080
+  restart: always
+dev:
+  extends: core
   volumes: 
    - ./data:/data
+  ports:
+   - 8080:8080
+backup:
+  extends: core
+  volumes_from: 
+   - data
+  volumes: 
+   - ./data:/data_target
+  command: 'bash -c "cp -r /data/* /data_target/"'
+data:
+  extends: core
+  volumes: 
+   - /data
+  command: '/bin/true'
+
