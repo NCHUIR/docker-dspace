@@ -31,6 +31,7 @@
   source_tgz_path="/tmp/dspace-src.tar.gz"
   postgresqld_home="/etc/service/postgresqld"
   DATA_VOLUME=/data
+  DBDATA_VOLUME=/dbdata
   
   # Database (postgresql) setup
   if [ -z "$POSTGRES_HOST" ]; then
@@ -148,20 +149,28 @@
   # compile the source and install dspace
   dspace.build "package" "fresh_install"
   
+  for f in $dspace_install_dir/bin/*; do
+      fd=$(basename $f)
+      fd=${fd%.sh}
+      ln -s $f /usr/bin/$fd
+  done
+  
   killall postgres
   sleep 10s
 
-  mkdir -p $DATA_VOLUME
+  mkdir -p $DBDATA_VOLUME
   POSTGRESQL_DATA=/var/lib/postgresql
   if [ -d $POSTGRESQL_DATA ]; then
-      mv $POSTGRESQL_DATA $DATA_VOLUME/postgres
-      ln -s $DATA_VOLUME/postgres $POSTGRESQL_DATA
+      mv $POSTGRESQL_DATA $DBDATA_VOLUME/postgres
+      ln -s $DBDATA_VOLUME/postgres $POSTGRESQL_DATA
   fi
-  rmdir $dspace_install_dir/assetstore
-  mkdir -p $DATA_VOLUME/assetstore
-  ln -s $DATA_VOLUME/assetstore $dspace_install_dir/assetstore
-  rmdir $dspace_install_dir/log
-  mkdir -p $DATA_VOLUME/log
+  mv $dspace_install_dir/assetstore $DBDATA_VOLUME/assetstore
+  ln -s $DBDATA_VOLUME/assetstore $dspace_install_dir/assetstore
+  mv $dspace_install_dir/solr $DBDATA_VOLUME/solr
+  ln -s $DBDATA_VOLUME/solr $dspace_install_dir/solr
+  
+  mkdir -p $DATA_VOLUME
+  mv $dspace_install_dir/log $DATA_VOLUME/log
   ln -s $DATA_VOLUME/log $dspace_install_dir/log
   mv $dspace_install_dir/webapps $DATA_VOLUME/webapps
   ln -s $DATA_VOLUME/webapps $dspace_install_dir/webapps

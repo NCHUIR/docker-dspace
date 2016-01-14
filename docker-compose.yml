@@ -3,29 +3,30 @@ core:
   env_file:
    - ./conf/database.conf
    - ./conf/dspace.conf
+data:
+  extends: core
+  volumes: 
+   - /data
+   - /dbdata
+  command: '/bin/true'
 production:
   extends: core
   volumes_from: 
    - data
   ports:
-   - 8080:8080
+   - "8080"
   restart: always
 dev:
   extends: core
   volumes: 
    - ./data:/data
   ports:
-   - 8080:8080
-backup:
+   - "8080"
+prepare_dev:
   extends: core
   volumes_from: 
    - data
   volumes: 
    - ./data:/data_target
   command: 'bash -c "cp -r /data/* /data_target/"'
-data:
-  extends: core
-  volumes: 
-   - /data
-  command: '/bin/true'
 
