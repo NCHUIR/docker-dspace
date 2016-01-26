@@ -3,4 +3,9 @@
 # `/sbin/setuser postgres` runs the given command as the user `postgres`.
 # If you omit that part, the command will be run as root.
 
-exec /sbin/setuser postgres /usr/lib/postgresql/9.4/bin/postgres -D /var/lib/postgresql/9.4/main -c config_file=/etc/postgresql/9.4/main/postgresql.conf >>/var/log/postgresd.log 2>&1
+POSTGRESQL_BIN=$(echo /usr/lib/postgresql/*/bin/postgres)
+POSTGRESQL_HOME=$(echo /var/lib/postgresql/*/main)
+POSTGRESQL_CONFIG_FILE=$(echo /etc/postgresql/*/main/postgresql.conf)
+
+exec /sbin/setuser postgres $POSTGRESQL_BIN -D $POSTGRESQL_HOME -c config_file=$POSTGRESQL_CONFIG_FILE >>/var/log/postgresd.log 2>&1
+

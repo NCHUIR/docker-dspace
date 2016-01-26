@@ -16,14 +16,6 @@ production:
   ports:
    - "8080"
   restart: always
-dev:
-  extends: core
-  volumes: 
-   - ./data:/data
-   - ./bin:/usr/local/bin
-  ports:
-   - "8080"
-   - "8080:8080"
 prepare_dev:
   extends: core
   volumes_from: 
@@ -32,4 +24,39 @@ prepare_dev:
    - ./data:/data_target
   # - ./bin:/usr/local/bin
   command: 'volume.backup data'
-
+dev:
+  extends: core
+  volumes_from: 
+   - data
+  volumes: 
+   - ./data:/data
+   - ./bin:/usr/local/bin
+  ports:
+   - "8080"
+   - "8080:8080"
+rebuild_run:
+  extends: core
+  volumes_from: 
+   - data
+   - rebuild_run_cache
+  volumes: 
+   - ./data:/data
+   - ./bin:/usr/local/bin
+  ports:
+   - "8080"
+   - "8080:8080"
+  command: 'bash -c "dspace.rebuild; /sbin/my_init"'
+rebuild_run_cache:
+  extends: core
+  volumes: 
+   - /dspace-src
+   - /dspace
+  command: '/bin/true'
+backup:
+  extends: core
+  volumes_from: 
+   - data
+  volumes: 
+   - ./data:/data_target
+  # - ./bin:/usr/local/bin
+  command: 'volume.backup dbdata'
