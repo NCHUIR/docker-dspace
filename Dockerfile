@@ -21,6 +21,8 @@ ADD . /deploy
 
 # === default env ===
 ENV dspace.source.dir /dspace-src
+ENV volume.dbdata.dirs assetstore,solr
+ENV volume.data.dirs log,webapps,config,handle_server
 
 # === RUN pre-conf.sh ===
 RUN bash /deploy/setup.sh

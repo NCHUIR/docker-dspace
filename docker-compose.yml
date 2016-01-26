@@ -20,13 +20,16 @@ dev:
   extends: core
   volumes: 
    - ./data:/data
+   - ./bin:/usr/local/bin
   ports:
    - "8080"
+   - "8080:8080"
 prepare_dev:
   extends: core
   volumes_from: 
    - data
   volumes: 
    - ./data:/data_target
-  command: 'bash -c "cp -r /data/* /data_target/"'
+  # - ./bin:/usr/local/bin
+  command: 'volume.backup data'
 

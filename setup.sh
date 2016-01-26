@@ -13,6 +13,8 @@
   # db.password=dspacesecretpassword
   # dspace.install.dir=/dspace
   # dspace.source.dir=/dspace-src
+  # volume.dbdata.dirs=assetstore solr
+  # volume.data.dirs=log webapps config handle_server
 
   # helpers
   function mvar {
@@ -25,6 +27,8 @@
   mvar db.password db_password
   mvar dspace.install.dir dspace_install_dir
   mvar dspace.source.dir source_path
+  mvar volume.data.dirs volume_data_dirs
+  mvar volume.dbdata.dirs volume_dbdata_dirs
 
   # variables
   deploy_dir="/deploy"
@@ -164,18 +168,24 @@
       mv $POSTGRESQL_DATA $DBDATA_VOLUME/postgres
       ln -s $DBDATA_VOLUME/postgres $POSTGRESQL_DATA
   fi
-  mv $dspace_install_dir/assetstore $DBDATA_VOLUME/assetstore
-  ln -s $DBDATA_VOLUME/assetstore $dspace_install_dir/assetstore
-  mv $dspace_install_dir/solr $DBDATA_VOLUME/solr
-  ln -s $DBDATA_VOLUME/solr $dspace_install_dir/solr
-  
-  mkdir -p $DATA_VOLUME
-  mv $dspace_install_dir/log $DATA_VOLUME/log
-  ln -s $DATA_VOLUME/log $dspace_install_dir/log
-  mv $dspace_install_dir/webapps $DATA_VOLUME/webapps
-  ln -s $DATA_VOLUME/webapps $dspace_install_dir/webapps
-  mv $dspace_install_dir/config $DATA_VOLUME/config
-  ln -s $DATA_VOLUME/config $dspace_install_dir/config
+
+  function mkln {
+      dirs=$(echo ${2//,/ })
+      mkdir -p $1
+      for dir in $dirs; do
+          src=$(echo $dspace_install_dir/$dir)
+          des=$(echo $1/$dir)
+          if [ -e $src ]; then
+              mv $src $des
+          else
+              mkdir -p $src
+          fi
+          ln -s $des $src
+      done
+  }
+
+  mkln $DBDATA_VOLUME $volume_dbdata_dirs
+  mkln $DATA_VOLUME $volume_data_dirs
 
   apt-get clean
   if ! [ -z $dont_rm_src ]; then
