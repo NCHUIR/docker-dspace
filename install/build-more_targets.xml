@@ -1,0 +1,40 @@
+    <target name="fresh_install_without_db"
+            depends="init_installation,init_configs,install_code"
+            description="Do a fresh install of the system, overwriting any data">
+
+        <delete failonerror="no">
+            <fileset dir="${dspace.dir}/webapps" includes="**/*" />
+        </delete>
+
+        <antcall target="copy_webapps" />
+
+    	<antcall target="init_geolite" />
+
+        <echo>
+====================================================================
+ The DSpace code has been installed.
+
+ To complete installation, you should do the following:
+
+ * Setup your Web servlet container (e.g. Tomcat) to look for your
+   DSpace web applications in: ${dspace.dir}/webapps/
+
+   OR, copy any web applications from ${dspace.dir}/webapps/ to
+   the appropriate place for your servlet container.
+   (e.g. '$CATALINA_HOME/webapps' for Tomcat)
+
+ * Start up your servlet container (e.g. Tomcat). DSpace now will
+   initialize the database on the first startup.
+
+ * Make an initial administrator account (an e-person) in DSpace:
+
+   ${dspace.dir}/bin/dspace create-administrator
+
+ You should then be able to access your DSpace's 'home page':
+
+   ${dspace.url}
+
+====================================================================
+        </echo>
+
+    </target>

@@ -2,7 +2,7 @@
 
 DATA_VOLUME=/data
 DBDATA_VOLUME=/dbdata
-DATA_TARGET=/data_target
+#DATA_TARGET=/data_target
 BAK_ROOT="$DATA_TARGET/bak"
 BAK_TARGET="$BAK_ROOT/$(date +%Y%m%d%H%M)"
 

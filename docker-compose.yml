@@ -1,62 +1,69 @@
-core:
-  build: .
-  env_file:
-   - ./conf/database.conf
-   - ./conf/dspace.conf
-data:
-  extends: core
-  volumes: 
-   - /data
-   - /dbdata
-  command: '/bin/true'
-production:
-  extends: core
-  volumes_from: 
-   - data
-  ports:
-   - "8080"
-  restart: always
-prepare_dev:
-  extends: core
-  volumes_from: 
-   - data
-  volumes: 
-   - ./data:/data_target
-  # - ./bin:/usr/local/bin
-  command: 'volume.backup data'
-dev:
-  extends: core
-  volumes_from: 
-   - data
-  volumes: 
-   - ./data:/data
-   - ./bin:/usr/local/bin
-  ports:
-   - "8080"
-   - "8080:8080"
-rebuild_run:
-  extends: core
-  volumes_from: 
-   - data
-   - rebuild_run_cache
-  volumes: 
-   - ./data:/data
-   - ./bin:/usr/local/bin
-  ports:
-   - "8080"
-   - "8080:8080"
-  command: 'bash -c "dspace.rebuild; /sbin/my_init"'
-rebuild_run_cache:
-  extends: core
-  volumes: 
-   - /dspace-src
-   - /dspace
-  command: '/bin/true'
-backup:
-  extends: core
-  volumes_from: 
-   - data
-  volumes: 
-   - ./data:/data_target
-  # - ./bin:/usr/local/bin
-  command: 'volume.backup dbdata'
+version: '2'
+volumes:
+  data:
+    driver: local
+  dbdata:
+    driver: local
+services:
+  core: &core
+    build: .
+    env_file: &env_file
+     - ./install/conf/env.conf
+  dspace:
+    <<: *core
+    depends_on:
+     - db
+    volumes_from: 
+     - data
+    ports:
+     - "80:8080"
+    restart: always
+  shell:
+    <<: *core
+    depends_on:
+     - db
+    volumes_from: 
+     - data
+    working_dir: /working_dir
+    volumes:
+     - .:/working_dir
+    command: bash
+  db:
+    image: postgres:9
+    env_file: *env_file
+  pgcli:
+    image: mribeiro/pgcli
+    depends_on:
+     - db
+    command: ["-h", "db", "-U", "postgres", "-d", "dspace"]
+  data:
+    <<: *core
+    volumes: 
+     - data:/data
+     - dbdata:/dbdata
+    command: '/bin/true'
+  prepare_with_data: &backup
+    <<: *core
+    volumes_from: 
+     - data
+    volumes: 
+     - ./data:/data_target
+    environment:
+      DATA_TARGET: '/data_target'
+    command: 'volume.backup data'
+  with_data: &with_data
+    <<: *core
+    volumes: 
+     - ./data:/data
+    depends_on:
+     - db
+    ports:
+     - "80:8080"
+  rebuild: # TODO: not completed
+    <<: *with_data
+    command: 'bash -c "dspace.rebuild; dspace.run"'
+  # TODO: AIP import and export
+  backup: # actually useless ...
+    <<: *backup
+    command: 'volume.backup dbdata'
+

@@ -1,2 +1,4 @@
-.git
+**/.git
 data
+**/*.swp
+docker-compose.yml
