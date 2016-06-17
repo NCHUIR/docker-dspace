@@ -12,7 +12,7 @@
 #######################################
 # dspace.build <mvn_target> <ant_target>
 # Ex: 
-# rebuild:     dspace.build "-U clean package" "update" or simply dspace.build
+# rebuild:     dspace.build "-U clean package" "update"
 # fresh_build: dspace.build "package" "fresh_install"
 # mvn only:    dspace.build "package"
 # ant only?:   dspace.build "" "update"
