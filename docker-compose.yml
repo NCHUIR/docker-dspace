@@ -66,7 +66,10 @@ services:
      - ./dspace-src:/outside_src
     environment:
       DSPACE_OUTSIDE_SOURCE_PATH: /outside_src
-    command: 'bash -c "dspace.rebuild; dspace.run"'
+    command: 
+     - bash
+     - "-c"
+     - 'dspace.rebuild "package -P !dspace-lni,!dspace-oai,!dspace-sword,!dspace-swordv2,!dspace-xmlui" && dspace.run'
   # TODO: AIP import and export
   backup: # actually useless ...
     <<: *backup
