@@ -1,16 +1,10 @@
 #!/bin/bash
 
-DATA_VOLUME=/data
-DBDATA_VOLUME=/dbdata
+#DATA_VOLUME=/data
+#DBDATA_VOLUME=/dbdata
 #DATA_TARGET=/data_target
 BAK_ROOT="$DATA_TARGET/bak"
 BAK_TARGET="$BAK_ROOT/$(date +%Y%m%d%H%M)"
-
-function mvar {
-    export $2=$(perl -e 'print $ENV{"'$1'"}')
-}
-
-mvar dspace.install.dir dspace_install_dir
 
 function help {
     echo "Usage:"

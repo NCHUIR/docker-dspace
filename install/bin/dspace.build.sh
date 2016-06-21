@@ -29,28 +29,31 @@ if [ "$mvn_target" ]; then
   cd $DSPACE_SOURCE_PATH
   eval "mvn $mvn_target | tee -a $log/mvn.log"
   if [[ $? -ne 0 ]]; then
-	  echo "mvn failed!" | tee -a $log/err.log
-	  exit 1
+    echo "mvn failed!" | tee -a $log/err.log
+    exit 1
   fi
 fi
 
 if [ "$ant_target" ]; then
   cd "$DSPACE_SOURCE_PATH/dspace/target/dspace-installer/"
   if [[ $? -ne 0 ]]; then
-	  echo "cd into $DSPACE_SOURCE_PATH/dspace/target/dspace-installer/ failed!" | tee -a $log/err.log
-	  exit 1
+    echo "cd into $DSPACE_SOURCE_PATH/dspace/target/dspace-installer/ failed!" | tee -a $log/err.log
+    exit 1
   fi;
 
   if [ -f "$BUILD_MORE_TARGETS_PATH" ]; then
+    if ! [ "$(cat build.xml | grep BUILD_MORE_TARGETS_ADDED )" ]; then
       echo ">>> add more targets to build.xml"
-    sed -i "/<project.*>/r $BUILD_MORE_TARGETS_PATH" build.xml
+      sed -i "/<project.*>/r $BUILD_MORE_TARGETS_PATH" build.xml
+      sed -i '/<project.*>/i <!-- BUILD_MORE_TARGETS_ADDED -->' build.xml
+    fi
   fi
 
   echo "=========== ant update ===========" | tee -a $log/ant.log
   eval "ant $ant_target | tee -a $log/ant.log"
   if [[ $? -ne 0 ]]; then
-	  echo "ant failed!" | tee -a $log/err.log
-	  exit 1
+    echo "ant failed!" | tee -a $log/err.log
+    exit 1
   fi
 
   echo "=========== cleaning up ===========" | tee -a $log/cleanup.log

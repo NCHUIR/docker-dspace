@@ -59,7 +59,7 @@ services:
      - db
     ports:
      - "80:8080"
-  rebuild:
+  rebuild: # docker-compose run --serivce-ports rebuild
     <<: *with_data
     volumes: 
      - ./data:/data
@@ -69,7 +69,7 @@ services:
     command: 
      - bash
      - "-c"
-     - 'dspace.rebuild "package -P !dspace-lni,!dspace-oai,!dspace-sword,!dspace-swordv2,!dspace-xmlui" && dspace.run'
+     - 'dspace.rebuild "package -P !dspace-lni,!dspace-sword,!dspace-swordv2,!dspace-xmlui" && dspace.run'
   # TODO: AIP import and export
   backup: # actually useless ...
     <<: *backup
