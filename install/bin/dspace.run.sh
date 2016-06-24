@@ -18,8 +18,8 @@ do
 done
 
 if [ $success -eq 1 ]; then
-    echo "Postgresql database ok! booting DSpace from /sbin/my_init ..."
-    /sbin/my_init
+    echo "Postgresql database ok! booting DSpace from '/usr/local/tomcat/bin/catalina.sh run' ..."
+    /usr/local/tomcat/bin/catalina.sh run
 else
     echo "Postgresql database not ready ... aborting"
     exit 1

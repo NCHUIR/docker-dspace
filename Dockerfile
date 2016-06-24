@@ -1,22 +1,21 @@
 # dspace_53_nchuir
 # ================
 
-FROM quantumobject/docker-tomcat8
+FROM tomcat:8
 
 # Install required apt-get packages
-RUN echo "deb http://archive.ubuntu.com/ubuntu wily-backports main restricted " >> /etc/apt/sources.list
 RUN apt-get update && apt-get install -y -q --force-yes \
-  python-software-properties \
-  software-properties-common \
   postgresql-client \
   openjdk-7-jdk \
   ant \
   git \
   unzip \
+  less \
+  rsync \
+  vim \
   && apt-get clean \
   && rm -rf /tmp/* /var/tmp/*  \
   && rm -rf /var/lib/apt/lists/*
-# should have rsync
 
 # Install Maven
 COPY install/maven.sh /tmp/
