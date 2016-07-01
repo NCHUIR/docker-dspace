@@ -1,4 +1,4 @@
-# dspace_53_nchuir
+# dspace
 # ================
 
 FROM tomcat:8

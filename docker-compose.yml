@@ -1,9 +1,4 @@
 version: '2'
-volumes:
-  data:
-    driver: local
-  dbdata:
-    driver: local
 services:
   core: &core
     build: .
@@ -39,8 +34,8 @@ services:
   data:
     <<: *core
     volumes: 
-     - data:/data
-     - dbdata:/dbdata
+     - /data
+     - /dbdata
     command: '/bin/true'
   prepare_with_data: &backup
     <<: *core

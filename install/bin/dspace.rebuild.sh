@@ -2,7 +2,7 @@
 
 set -o pipefail
 if [ -f $ENV_FILE_PATH ]; then
-    export $(cat $ENV_FILE_PATH);
+    eval $(cat $ENV_FILE_PATH | while read line; do echo $line | sed 's/^\([^=]*\)=\(.*\)$/export \1="\2";/'; done)
 fi
 
 if [ "$1" ]; then

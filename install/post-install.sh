@@ -1,14 +1,16 @@
 #!/bin/bash
 
-# Get env
-export $(cat $ENV_FILE_PATH);
+if [ -f $ENV_FILE_PATH ]; then
+  # Get env
+  eval $(cat $ENV_FILE_PATH | while read line; do echo $line | sed 's/^\([^=]*\)=\(.*\)$/export \1="\2";/'; done)
 
-echo "set PGPASSWORD env for psql ..."
-echo "PGPASSWORD=$POSTGRES_PASSWORD" >> $ENV_FILE_PATH
-# More info: https://www.postgresql.org/docs/current/static/libpq-envars.html
+  echo "set PGPASSWORD env for psql ..."
+  echo "PGPASSWORD=$POSTGRES_PASSWORD" >> $ENV_FILE_PATH
+  # More info: https://www.postgresql.org/docs/current/static/libpq-envars.html
 
-echo "let interactive shell (bash) has env ..."
-echo 'export $(cat $ENV_FILE_PATH)' >> ~/.bashrc
+  echo "let interactive shell (bash) has env ..."
+  echo 'eval $(cat $ENV_FILE_PATH | while read line; do echo $line | sed '"'"'s/^\([^=]*\)=\(.*\)$/export \1="\2";/'"'"'; done)\' >> ~/.bashrc
+fi
 
 echo "shell scripts as command ..."
 for f in /tmp/bin/*; do 
