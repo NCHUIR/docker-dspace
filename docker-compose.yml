@@ -4,6 +4,7 @@ services:
     build: .
     env_file: &env_file
      - ./install/conf/env.conf
+    command: dspace.run
   dspace:
     <<: *core
     depends_on:
